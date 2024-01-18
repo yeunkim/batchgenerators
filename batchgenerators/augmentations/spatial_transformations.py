@@ -114,21 +114,21 @@ def augment_zoom(sample_data, sample_seg, zoom_factors, order=3, order_seg=1):
     return sample_data, target_seg
 
 
-def augment_mirroring(sample_data, sample_seg=None, axes=(0, 1, 2)):
+def augment_mirroring(sample_data, sample_seg=None, axes=(0, 1, 2), prob=(0.5,0.5,0.5)):
     if (len(sample_data.shape) != 3) and (len(sample_data.shape) != 4):
         raise Exception(
             "Invalid dimension for sample_data and sample_seg. sample_data and sample_seg should be either "
             "[channels, x, y] or [channels, x, y, z]")
-    if 0 in axes and np.random.uniform() < 0.5:
+    if 0 in axes and np.random.uniform() < prob[0]:
         sample_data[:, :] = sample_data[:, ::-1]
         if sample_seg is not None:
             sample_seg[:, :] = sample_seg[:, ::-1]
-    if 1 in axes and np.random.uniform() < 0.5:
+    if 1 in axes and np.random.uniform() < prob[1]:
         sample_data[:, :, :] = sample_data[:, :, ::-1]
         if sample_seg is not None:
             sample_seg[:, :, :] = sample_seg[:, :, ::-1]
     if 2 in axes and len(sample_data.shape) == 4:
-        if np.random.uniform() < 0.5:
+        if np.random.uniform() < prob[2]:
             sample_data[:, :, :, :] = sample_data[:, :, :, ::-1]
             if sample_seg is not None:
                 sample_seg[:, :, :, :] = sample_seg[:, :, :, ::-1]

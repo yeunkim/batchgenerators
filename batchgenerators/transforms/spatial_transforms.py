@@ -191,11 +191,12 @@ class MirrorTransform(AbstractTransform):
 
     """
 
-    def __init__(self, axes=(0, 1, 2), data_key="data", label_key="seg", p_per_sample=1):
+    def __init__(self, axes=(0, 1, 2), data_key="data", label_key="seg", p_per_sample=1, prob=(0.5,0.5,0.5)):
         self.p_per_sample = p_per_sample
         self.data_key = data_key
         self.label_key = label_key
         self.axes = axes
+        self.prob = prob
         if max(axes) > 2:
             raise ValueError("MirrorTransform now takes the axes as the spatial dimensions. What previously was "
                              "axes=(2, 3, 4) to mirror along all spatial dimensions of a 5d tensor (b, c, x, y, z) "
@@ -210,7 +211,7 @@ class MirrorTransform(AbstractTransform):
                 sample_seg = None
                 if seg is not None:
                     sample_seg = seg[b]
-                ret_val = augment_mirroring(data[b], sample_seg, axes=self.axes)
+                ret_val = augment_mirroring(data[b], sample_seg, axes=self.axes, prob=self.prob)
                 data[b] = ret_val[0]
                 if seg is not None:
                     seg[b] = ret_val[1]
